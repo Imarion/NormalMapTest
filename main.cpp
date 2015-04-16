@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-#include "DemoLight.h"
+#include "NormalMapTest.h"
 
 #include <QGuiApplication>
 #include <QScreen>

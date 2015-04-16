@@ -13,8 +13,6 @@
 
 #include "vertex.h"
 #include "directionallight.h"
-#include "pointlight.h"
-#include "spotlight.h"
 
 #define ToRadian(x) ((x) * M_PI / 180.0f)
 #define ToDegree(x) ((x) * 180.0f / M_PI)
@@ -64,38 +62,9 @@ private:
     GLuint mEyeWorldPosLocation;
     GLuint mMatSpecularIntensityLocation, mMatSpecularPowerLocation;
 
-    struct {
-        GLuint Color;
-        GLuint AmbientIntensity;
-        GLuint DiffuseIntensity;
-        GLuint Position;
-        struct
-        {
-            GLuint Constant;
-            GLuint Linear;
-            GLuint Exp;
-        } Atten;
-    } mPointLightsLocation[1];
-
-    struct {
-        GLuint Color;
-        GLuint AmbientIntensity;
-        GLuint DiffuseIntensity;
-        GLuint Position;
-        GLuint Direction;
-        GLuint Cutoff;
-        struct {
-            GLuint Constant;
-            GLuint Linear;
-            GLuint Exp;
-        } Atten;
-    } mSpotLightsLocation[1];
-
     Vertex       *Vertices;
     unsigned int *Indices;
     DirectionalLight   mDirectionalLight;
-    PointLight         mPointLight;
-    SpotLight          mSpotLight;
 
     //debug
     void printMatrix(const QMatrix4x4& mat);

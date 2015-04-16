@@ -1,25 +1,22 @@
 #QT += gui-private core-private
 QT += gui core
 
-HEADERS += DemoLight.h \
+HEADERS += NormalMapTest.h \
     utils.h \
     vertex.h \
     basiclight.h \
-    pointlight.h \
-    directionallight.h \
-    spotlight.h
+    directionallight.h
 
-SOURCES += DemoLight.cpp main.cpp \
+SOURCES += NormalMapTest.cpp main.cpp \
     utils.cpp \
     vertex.cpp \
     basiclight.cpp \
-    pointlight.cpp \
-    directionallight.cpp \
-    spotlight.cpp
+    directionallight.cpp
 
 OTHER_FILES += \
     vshader.txt \
-    fshader.txt
+    fshader_color.txt \
+    fshader_texture.txt
 
 RESOURCES += \
     shaders.qrc

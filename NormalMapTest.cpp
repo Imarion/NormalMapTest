@@ -1,4 +1,4 @@
-#include "DemoLight.h"
+#include "NormalMapTest.h"
 
 #include <QDebug>
 #include <QFile>
@@ -88,26 +88,10 @@ void MyWindow::initialize()
     initShaders();
 
     //mDirectionalLight.setColor(QVector3D(1.0f, 1.0f, 1.0f)); // tut 19
-    mDirectionalLight.setColor(QVector3D(0.0f, 0.0f, 0.0f));   // tut 20
-    mDirectionalLight.setAmbientIntensity(0.0f);
-    mDirectionalLight.setDiffuseIntensity(0.0f);
+    mDirectionalLight.setColor(QVector3D(1.0f, 1.0f, 1.0f));   // tut 20
+    mDirectionalLight.setAmbientIntensity(1.0f);
+    mDirectionalLight.setDiffuseIntensity(1.0f);
     mDirectionalLight.setDirection(QVector3D(0.0f, 0.0f, 1.0f));
-
-    mPointLight.setAmbientIntensity(0.2f);
-    mPointLight.setDiffuseIntensity(0.5f);
-    mPointLight.setColor(QVector3D(1.0f, 0.5f, 0.0f));
-    mPointLight.setPosition(QVector3D(0.0f, 0.0f, -3.0f));
-    mPointLight.setLinearAtt(0.1f);
-    mPointLight.setExpAtt(0.2f);
-
-    mSpotLight.setDiffuseIntensity(0.9f);
-    mSpotLight.setColor(QVector3D(0.5f, 0.5f, 0.0f));
-    //mSpotLight.setPosition(QVector3D(5.0f,  3.0f, 10.0f));
-    mSpotLight.setPosition(QVector3D(0.0f,  5.0f, 0.0f));
-    mSpotLight.setDirection(QVector3D(0.0f, -1.0f,  0.0f));
-    mSpotLight.setLinearAtt(0.1f);
-    //mSpotLight.setExpAtt(0.5f);
-    mSpotLight.setCutoff(20.0f);
 
     gWVPLocation     = mProgram->uniformLocation("gWVP");
     gWorldLocation   = mProgram->uniformLocation("gWorld");
@@ -123,27 +107,6 @@ void MyWindow::initialize()
     mEyeWorldPosLocation            = mProgram->uniformLocation("EyeWorldPos");
     mMatSpecularIntensityLocation   = mProgram->uniformLocation("gMatProp.SpecularIntensity");
     mMatSpecularPowerLocation       = mProgram->uniformLocation("gMatProp.SpecularPower");
-
-    // for point light (tut 20)
-    mPointLightsLocation[0].Color            = mProgram->uniformLocation("gPointLight.Base.Color");
-    mPointLightsLocation[0].AmbientIntensity = mProgram->uniformLocation("gPointLight.Base.AmbientIntensity");    
-    mPointLightsLocation[0].DiffuseIntensity = mProgram->uniformLocation("gPointLight.Base.DiffuseIntensity");
-    mPointLightsLocation[0].Position         = mProgram->uniformLocation("gPointLight.Position");
-    mPointLightsLocation[0].Atten.Constant   = mProgram->uniformLocation("gPointLight.Atten.Constant");
-    mPointLightsLocation[0].Atten.Linear     = mProgram->uniformLocation("gPointLight.Atten.Linear");
-    mPointLightsLocation[0].Atten.Exp        = mProgram->uniformLocation("gPointLight.Atten.Exp");
-
-    // for spot light (tut 21)
-    mSpotLightsLocation[0].Color            = mProgram->uniformLocation("gSpotLight.Base.Base.Color");
-    mSpotLightsLocation[0].AmbientIntensity = mProgram->uniformLocation("gSpotLight.Base.Base.AmbientIntensity");
-    mSpotLightsLocation[0].DiffuseIntensity = mProgram->uniformLocation("gSpotLight.Base.Base.DiffuseIntensity");
-    mSpotLightsLocation[0].Position         = mProgram->uniformLocation("gSpotLight.Base.Position");
-    mSpotLightsLocation[0].Atten.Constant   = mProgram->uniformLocation("gSpotLight.Base.Atten.Constant");
-    mSpotLightsLocation[0].Atten.Linear     = mProgram->uniformLocation("gSpotLight.Base.Atten.Linear");
-    mSpotLightsLocation[0].Atten.Exp        = mProgram->uniformLocation("gSpotLight.Base.Atten.Exp");
-    mSpotLightsLocation[0].Direction        = mProgram->uniformLocation("gSpotLight.Direction");
-    mSpotLightsLocation[0].Cutoff           = mProgram->uniformLocation("gSpotLight.Cutoff");
-
 
     glFrontFace(GL_CCW);
     glCullFace(GL_BACK);
@@ -269,27 +232,6 @@ void MyWindow::render()
         glUniform1f(mMatSpecularIntensityLocation, 0.0f);
         glUniform1f(mMatSpecularPowerLocation, 0.0f);
 
-        // for point lights, tut 20.
-        glUniform3f(mPointLightsLocation[0].Color, mPointLight.getColor().x(), mPointLight.getColor().y(), mPointLight.getColor().z());
-        glUniform1f(mPointLightsLocation[0].AmbientIntensity, mPointLight.getAmbientIntensity());
-        glUniform1f(mPointLightsLocation[0].DiffuseIntensity, mPointLight.getDiffuseIntensity());
-        glUniform3f(mPointLightsLocation[0].Position, mPointLight.getPosition().x(), mPointLight.getPosition().y(), mPointLight.getPosition().z());
-        glUniform1f(mPointLightsLocation[0].Atten.Constant, mPointLight.getConstAtt());
-        glUniform1f(mPointLightsLocation[0].Atten.Linear, mPointLight.getLinearAtt());
-        glUniform1f(mPointLightsLocation[0].Atten.Exp, mPointLight.getExpAtt());
-
-        // for point lights, tut 21.
-        glUniform3f(mSpotLightsLocation[0].Color, mSpotLight.getColor().x(), mSpotLight.getColor().y(), mSpotLight.getColor().z());
-        glUniform1f(mSpotLightsLocation[0].AmbientIntensity, mSpotLight.getAmbientIntensity());
-        glUniform1f(mSpotLightsLocation[0].DiffuseIntensity, mSpotLight.getDiffuseIntensity());
-        glUniform3f(mSpotLightsLocation[0].Position, mSpotLight.getPosition().x(), mSpotLight.getPosition().y(), mSpotLight.getPosition().z());
-        glUniform1f(mSpotLightsLocation[0].Atten.Constant, mSpotLight.getConstAtt());
-        glUniform1f(mSpotLightsLocation[0].Atten.Linear, mSpotLight.getLinearAtt());
-        glUniform1f(mSpotLightsLocation[0].Atten.Exp, mSpotLight.getExpAtt());
-        QVector3D normDir = mSpotLight.getDirection().normalized();
-        glUniform3f(mSpotLightsLocation[0].Direction, normDir.x(), normDir.y(), normDir.z());
-        glUniform1f(mSpotLightsLocation[0].Cutoff, cosf(ToRadian(mSpotLight.getCutoff())));
-
         glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glDisableVertexAttribArray(0);
@@ -316,7 +258,7 @@ void MyWindow::initShaders()
     shaderFile.close();
     qDebug() << "vertex 1 compile: " << vShader.compileSourceCode(shaderSource);
 
-    shaderFile.setFileName(":/fshader.txt");
+    shaderFile.setFileName(":/fshader_texture.txt");
     shaderFile.open(QIODevice::ReadOnly);
     shaderSource = shaderFile.readAll();
     shaderFile.close();
@@ -347,16 +289,12 @@ void MyWindow::keyPressEvent(QKeyEvent *keyEvent)
         case Qt::Key_P:
             break;
         case Qt::Key_Up:
-            mSpotLight.setDirection(mSpotLight.getDirection()-QVector3D(0.0f, 0.0f, 0.1f));
             break;
         case Qt::Key_Down:
-            mSpotLight.setDirection(mSpotLight.getDirection()+QVector3D(0.0f, 0.0f, 0.1f));
             break;
         case Qt::Key_Left:
-            mSpotLight.setDirection(mSpotLight.getDirection()-QVector3D(0.1f, 0.0f, 0.f));
             break;
         case Qt::Key_Right:
-            mSpotLight.setDirection(mSpotLight.getDirection()+QVector3D(0.1f, 0.0f, 0.f));
             break;
         case Qt::Key_Delete:
             break;
@@ -365,22 +303,16 @@ void MyWindow::keyPressEvent(QKeyEvent *keyEvent)
         case Qt::Key_Home:
             break;
         case Qt::Key_Z:
-            mSpotLight.setPosition(mSpotLight.getPosition()-QVector3D(0.0f, 0.0f, 0.1f));
             break;
         case Qt::Key_Q:
-            mSpotLight.setPosition(mSpotLight.getPosition()-QVector3D(0.1f, 0.0f, 0.0f));
             break;
         case Qt::Key_S:
-            mSpotLight.setPosition(mSpotLight.getPosition()+QVector3D(0.0f, 0.0f, 0.1f));
             break;
         case Qt::Key_D:
-            mSpotLight.setPosition(mSpotLight.getPosition()+QVector3D(0.1f, 0.0f, 0.f));
             break;
         case Qt::Key_X:
-            mDirectionalLight.setAmbientIntensity(mDirectionalLight.getAmbientIntensity()+0.05f);
             break;
         case Qt::Key_W:
-            mDirectionalLight.setAmbientIntensity(mDirectionalLight.getAmbientIntensity()-0.05f);
             break;
         default:
             break;
