@@ -252,7 +252,7 @@ void MyWindow::initShaders()
 
     //mProgram
     // Shader 1
-    shaderFile.setFileName(":/vshader.txt");
+    shaderFile.setFileName(":/vshader_texture.txt");
     shaderFile.open(QIODevice::ReadOnly);
     shaderSource = shaderFile.readAll();
     shaderFile.close();

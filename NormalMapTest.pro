@@ -14,9 +14,10 @@ SOURCES += NormalMapTest.cpp main.cpp \
     directionallight.cpp
 
 OTHER_FILES += \
-    vshader.txt \
     fshader_color.txt \
-    fshader_texture.txt
+    fshader_texture.txt \
+    vshader_color.txt \
+    vshader_texture.txt
 
 RESOURCES += \
     shaders.qrc
