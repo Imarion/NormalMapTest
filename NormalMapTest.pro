@@ -5,13 +5,17 @@ HEADERS += NormalMapTest.h \
     utils.h \
     vertex.h \
     basiclight.h \
-    directionallight.h
+    directionallight.h \
+    vertexcol.h \
+    vertextex.h
 
 SOURCES += NormalMapTest.cpp main.cpp \
     utils.cpp \
     vertex.cpp \
     basiclight.cpp \
-    directionallight.cpp
+    directionallight.cpp \
+    vertexcol.cpp \
+    vertextex.cpp
 
 OTHER_FILES += \
     fshader_color.txt \

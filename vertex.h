@@ -2,22 +2,21 @@
 #define VERTEX_H
 
 #include <QVector3D>
-#include <QVector2D>
 
 class Vertex
 {
 public:
     Vertex();
-    Vertex(QVector3D pos, QVector2D tex);
+    Vertex(QVector3D inPos, QVector3D inNormal);
 
-    QVector3D getPos(), getNormal();
-    QVector2D getTexCoord();
+    QVector3D getPos();
+    QVector3D getNormal();
 
     void setNormal(QVector3D inNormal);
+    void setPos(QVector3D inPos);
 
 private:
     QVector3D m_pos;
-    QVector2D m_tex;
     QVector3D m_normal;
 };
 

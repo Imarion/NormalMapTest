@@ -119,15 +119,15 @@ void MyWindow::initialize()
 void MyWindow::CreateVertexBuffer()
 {
     // C++11 required
-    Vertices = new Vertex[NUM_VERTICES] {
-        Vertex(QVector3D(-1.0f, 0.5f,  0.5773f),  QVector2D(0.0f, 0.0f)),
-        Vertex(QVector3D( 0.0f, 0.5f, -1.15475f), QVector2D(0.5f, 0.0f)),
-        Vertex(QVector3D( 1.0f, 0.5f,  0.5773f),  QVector2D(1.0f, 0.0f)),
-        Vertex(QVector3D( 0.0f, 2.0f,  0.0f),     QVector2D(0.5f, 1.0f)),
-        Vertex(QVector3D(-100.0f, 0.0f,  100.0f),   QVector2D(0.0f, 0.0f)),
-        Vertex(QVector3D( 100.0f, 0.0f,  100.0f),   QVector2D(1.0f, 0.0f)),
-        Vertex(QVector3D( 100.0f, 0.0f, -100.0),    QVector2D(1.0f, 1.0f)),
-        Vertex(QVector3D(-100.0f, 0.0f, -100.0f),   QVector2D(0.0f, 1.0f))
+    Vertices = new VertexTex[NUM_VERTICES] {
+        VertexTex(QVector3D(-1.0f, 0.5f,  0.5773f),  QVector2D(0.0f, 0.0f)),
+        VertexTex(QVector3D( 0.0f, 0.5f, -1.15475f), QVector2D(0.5f, 0.0f)),
+        VertexTex(QVector3D( 1.0f, 0.5f,  0.5773f),  QVector2D(1.0f, 0.0f)),
+        VertexTex(QVector3D( 0.0f, 2.0f,  0.0f),     QVector2D(0.5f, 1.0f)),
+        VertexTex(QVector3D(-100.0f, 0.0f,  100.0f),   QVector2D(0.0f, 0.0f)),
+        VertexTex(QVector3D( 100.0f, 0.0f,  100.0f),   QVector2D(1.0f, 0.0f)),
+        VertexTex(QVector3D( 100.0f, 0.0f, -100.0),    QVector2D(1.0f, 1.0f)),
+        VertexTex(QVector3D(-100.0f, 0.0f, -100.0f),   QVector2D(0.0f, 1.0f))
     };
     Indices = new unsigned int[NUM_INDICES] {
          0, 3, 1,
@@ -187,9 +187,10 @@ void MyWindow::render()
     glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)(sizeof(Vertices[0].getPos())));
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)((sizeof(Vertices[0].getPos()))+(sizeof(Vertices[0].getTexCoord()))));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)(sizeof(Vertices[0].getPos())));
+    //glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)((sizeof(Vertices[0].getPos()))+(sizeof(Vertices[0].getNormal()))));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)(sizeof(Vertex)));
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
 
