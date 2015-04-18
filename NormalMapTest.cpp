@@ -13,8 +13,8 @@
 #include "utils.h"
 #include "vertex.h"
 
-#define NUM_VERTICES    8
-#define NUM_INDICES     18
+#define NUM_VERTICES    36
+#define NUM_INDICES     36
 //#define NUM_VERTICES    4
 //#define NUM_INDICES     6
 
@@ -120,22 +120,78 @@ void MyWindow::CreateVertexBuffer()
 {
     // C++11 required
     Vertices = new VertexTex[NUM_VERTICES] {
-        VertexTex(QVector3D(-1.0f, 0.5f,  0.5773f),  QVector2D(0.0f, 0.0f)),   // lower left front
-        VertexTex(QVector3D( 0.0f, 0.5f, -1.15475f), QVector2D(0.5f, 0.0f)),   // lower mid back
-        VertexTex(QVector3D( 1.0f, 0.5f,  0.5773f),  QVector2D(1.0f, 0.0f)),   // lower right front
-        VertexTex(QVector3D( 0.0f, 2.0f,  0.0f),     QVector2D(0.5f, 1.0f)),   // top
-        VertexTex(QVector3D(-100.0f, 0.0f,  100.0f),   QVector2D(0.0f, 0.0f)),
-        VertexTex(QVector3D( 100.0f, 0.0f,  100.0f),   QVector2D(1.0f, 0.0f)),
-        VertexTex(QVector3D( 100.0f, 0.0f, -100.0),    QVector2D(1.0f, 1.0f)),
-        VertexTex(QVector3D(-100.0f, 0.0f, -100.0f),   QVector2D(0.0f, 1.0f))
+        // front
+        VertexTex(QVector3D(-1.0f,  1.0f, 1.0f),  QVector2D(0.0f, 1.0f)), // upper left
+        VertexTex(QVector3D(-1.0f, -1.0f, 1.0f),  QVector2D(0.0f, 0.0f)), // lower left
+        VertexTex(QVector3D( 1.0f, -1.0f, 1.0f),  QVector2D(1.0f, 0.0f)), // lower right
+        VertexTex(QVector3D(-1.0f,  1.0f, 1.0f),  QVector2D(0.0f, 1.0f)), // upper left
+        VertexTex(QVector3D( 1.0f, -1.0f, 1.0f),  QVector2D(1.0f, 0.0f)), // lower right
+        VertexTex(QVector3D( 1.0f,  1.0f, 1.0f),  QVector2D(1.0f, 1.0f)), // upper right
+
+        // left
+        VertexTex(QVector3D(-1.0f,  1.0f, -1.0f), QVector2D(0.0f, 1.0f)), // upper left
+        VertexTex(QVector3D(-1.0f, -1.0f, -1.0f), QVector2D(0.0f, 0.0f)), // lower left
+        VertexTex(QVector3D(-1.0f, -1.0f,  1.0f), QVector2D(1.0f, 0.0f)), // lower right
+        VertexTex(QVector3D(-1.0f,  1.0f, -1.0f), QVector2D(0.0f, 1.0f)), // upper left
+        VertexTex(QVector3D(-1.0f, -1.0f,  1.0f), QVector2D(1.0f, 0.0f)), // lower right
+        VertexTex(QVector3D(-1.0f,  1.0f,  1.0f), QVector2D(1.0f, 1.0f)), // upper right
+
+        // right
+        VertexTex(QVector3D( 1.0f,  1.0f,  1.0f), QVector2D(0.0f, 1.0f)), // upper left
+        VertexTex(QVector3D( 1.0f, -1.0f,  1.0f), QVector2D(0.0f, 0.0f)), // lower left
+        VertexTex(QVector3D( 1.0f, -1.0f, -1.0f), QVector2D(1.0f, 0.0f)), // lower right
+        VertexTex(QVector3D( 1.0f,  1.0f,  1.0f), QVector2D(0.0f, 1.0f)), // upper left
+        VertexTex(QVector3D( 1.0f, -1.0f, -1.0f), QVector2D(1.0f, 0.0f)), // lower right
+        VertexTex(QVector3D( 1.0f,  1.0f, -1.0f), QVector2D(1.0f, 1.0f)), // upper right
+
+        // back
+        VertexTex(QVector3D( 1.0f,  1.0f, -1.0f), QVector2D(0.0f, 1.0f)), // upper left
+        VertexTex(QVector3D( 1.0f, -1.0f, -1.0f), QVector2D(0.0f, 0.0f)), // lower left
+        VertexTex(QVector3D(-1.0f, -1.0f, -1.0f), QVector2D(1.0f, 0.0f)), // lower right
+        VertexTex(QVector3D( 1.0f,  1.0f, -1.0f), QVector2D(0.0f, 1.0f)), // upper left
+        VertexTex(QVector3D(-1.0f, -1.0f, -1.0f), QVector2D(1.0f, 0.0f)), // lower right
+        VertexTex(QVector3D(-1.0f,  1.0f, -1.0f), QVector2D(1.0f, 1.0f)), // upper right
+
+        // top
+        VertexTex(QVector3D( 1.0f,  1.0f,  1.0f), QVector2D(0.0f, 1.0f)), // upper left
+        VertexTex(QVector3D( 1.0f,  1.0f, -1.0f), QVector2D(0.0f, 0.0f)), // lower left
+        VertexTex(QVector3D(-1.0f,  1.0f, -1.0f), QVector2D(1.0f, 0.0f)), // lower right
+        VertexTex(QVector3D( 1.0f,  1.0f,  1.0f), QVector2D(0.0f, 1.0f)), // upper left
+        VertexTex(QVector3D(-1.0f,  1.0f, -1.0f), QVector2D(1.0f, 0.0f)), // lower right
+        VertexTex(QVector3D(-1.0f,  1.0f,  1.0f), QVector2D(1.0f, 1.0f)), // upper right
+
+        // bottom
+        VertexTex(QVector3D(-1.0f, -1.0f,  1.0f), QVector2D(0.0f, 1.0f)), // upper left
+        VertexTex(QVector3D(-1.0f, -1.0f, -1.0f), QVector2D(0.0f, 0.0f)), // lower left
+        VertexTex(QVector3D( 1.0f, -1.0f, -1.0f), QVector2D(1.0f, 0.0f)), // lower right
+        VertexTex(QVector3D(-1.0f, -1.0f,  1.0f), QVector2D(0.0f, 1.0f)), // upper left
+        VertexTex(QVector3D( 1.0f, -1.0f, -1.0f), QVector2D(1.0f, 0.0f)), // lower right
+        VertexTex(QVector3D( 1.0f, -1.0f,  1.0f), QVector2D(1.0f, 1.0f)), // upper right
+
+/*
+        VertexTex(QVector3D(-1.0f, -1.0f, 0.0f),  QVector2D(0.0f, 0.0f)), // 0 lower left front
+        VertexTex(QVector3D( 1.0f, -1.0f, 0.0f),  QVector2D(1.0f, 0.0f)), // 1 lower right front
+        VertexTex(QVector3D(-1.0f,  1.0f, 0.0f),  QVector2D(0.0f, 1.0f)), // 2 upper left front
+        VertexTex(QVector3D( 1.0f,  1.0f, 0.0f),  QVector2D(1.0f, 1.0f)), // 3 upper right front
+        VertexTex(QVector3D(-1.0f, -1.0f, -1.0f), QVector2D(1.0f, 0.0f)), // 4 lower left back (=lower right when looking at ...)
+        VertexTex(QVector3D( 1.0f, -1.0f, -1.0f), QVector2D(0.0f, 0.0f)), // 5 lower right back
+        VertexTex(QVector3D(-1.0f,  1.0f, -1.0f), QVector2D(1.0f, 1.0f)), // 6 upper left back
+        VertexTex(QVector3D( 1.0f,  1.0f, -1.0f), QVector2D(0.0f, 1.0f)), // 7 upper right back
+*/
     };
     Indices = new unsigned int[NUM_INDICES] {
-         0, 3, 1,
-         1, 3, 2,
-         2, 3, 0,
-         1, 2, 0,
-         4, 6, 7,
-         4, 5, 6
+        0, 1, 2,
+        3, 4, 5,
+        6, 7, 8,
+        9, 10, 11,
+        12, 13, 14,
+        15, 16, 17,
+        18, 19, 20,
+        21, 22, 23,
+        24, 25, 26,
+        27, 28, 29,
+        30, 31, 32,
+        33, 34, 35
     };
     /*
     Indices = new unsigned int[NUM_INDICES] {
@@ -200,15 +256,15 @@ void MyWindow::render()
     Scale += 0.1f; // tut 12
 
     QMatrix4x4 WVP, World;
-    QVector3D  CameraPos(0.0f, 1.0f, 5.0f);
+    QVector3D  CameraPos(0.0f, 0.0f, 5.0f);
 
     //World.translate(0.0f, 0.0f, 1.0f);
     //World.translate(0.0f, 0.0f, Scale/10.0f);
-    //World.rotate(Scale, 0.0f, 1.0f, 0.0f);
+    World.rotate(Scale*2, 1.0f, 0.0f, 0.0f);
     //mPointLight.setPosition(mPointLight.getPosition()-QVector3D(0.0f, 0.0f, Scale/1000.0f));
 
     WVP.perspective(60.0f, (float)this->width()/(float)this->height(), 1.0f, 100.0f);
-    WVP.lookAt(CameraPos, QVector3D(0.0f, 0.0f, 1.0f), QVector3D(0.0f, 1.0f, 0.0f));
+    WVP.lookAt(CameraPos, QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
 
     WVP *= World;
 
