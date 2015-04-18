@@ -112,8 +112,8 @@ void MyWindow::initialize()
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
 
-    //PrepareTexture(GL_TEXTURE_2D, "F:/Download/Programmation/OpenGL/ogldev-source/ogldev-source/tutorial16/test.png");
-    PrepareTexture(GL_TEXTURE_2D, "C:/Users/emr/Documents/Perso/Programmation/Opengl/Ogldev/ogldev-source/tutorial19/test.png");
+    PrepareTexture(GL_TEXTURE_2D, "F:/Download/Programmation/OpenGL/ogldev-source/ogldev-source/tutorial16/test.png");
+    //PrepareTexture(GL_TEXTURE_2D, "C:/Users/emr/Documents/Perso/Programmation/Opengl/Ogldev/ogldev-source/tutorial19/test.png");
 }
 
 void MyWindow::CreateVertexBuffer()
