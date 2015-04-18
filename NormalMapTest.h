@@ -11,7 +11,7 @@
 
 #include <QOpenGLShaderProgram>
 
-#include "vertex.h"
+#include "vertextex.h"
 #include "directionallight.h"
 
 #define ToRadian(x) ((x) * M_PI / 180.0f)
@@ -62,7 +62,7 @@ private:
     GLuint mEyeWorldPosLocation;
     GLuint mMatSpecularIntensityLocation, mMatSpecularPowerLocation;
 
-    Vertex       *Vertices;
+    VertexTex    *Vertices;
     unsigned int *Indices;
     DirectionalLight   mDirectionalLight;
 
