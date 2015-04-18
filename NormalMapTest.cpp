@@ -187,9 +187,9 @@ void MyWindow::render()
     glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex), 0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex), (const GLvoid*)(sizeof(Vertices[0].getPos())));
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex), (const GLvoid*)((sizeof(Vertices[0].getPos()))+(sizeof(Vertices[0].getNormal()))));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex), 0);    
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex), (const GLvoid*)(sizeof(Vertices[0].getPos())));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex), (const GLvoid*)((sizeof(Vertices[0].getPos()))+(sizeof(Vertices[0].getNormal()))));
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
 

@@ -10,7 +10,7 @@ utils::utils()
 }
 
 void utils::CalcNormals(const unsigned int* pIndices, unsigned int IndexCount,
-                        Vertex *pVertices, unsigned int VertexCount)
+                        VertexTex *pVertices, unsigned int VertexCount)
 {
     unsigned int Index0;
     unsigned int Index1;
