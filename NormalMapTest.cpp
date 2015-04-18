@@ -112,18 +112,18 @@ void MyWindow::initialize()
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
 
-    //PrepareTexture(GL_TEXTURE_2D, "F:/Download/Programmation/OpenGL/ogldev-source/ogldev-source/tutorial16/test.png");
-    PrepareTexture(GL_TEXTURE_2D, "C:/Users/emr/Documents/Perso/Programmation/Opengl/Ogldev/ogldev-source/tutorial19/test.png");
+    PrepareTexture(GL_TEXTURE_2D, "F:/Download/Programmation/OpenGL/ogldev-source/ogldev-source/tutorial16/test.png");
+    //PrepareTexture(GL_TEXTURE_2D, "C:/Users/emr/Documents/Perso/Programmation/Opengl/Ogldev/ogldev-source/tutorial19/test.png");
 }
 
 void MyWindow::CreateVertexBuffer()
 {
     // C++11 required
     Vertices = new VertexTex[NUM_VERTICES] {
-        VertexTex(QVector3D(-1.0f, 0.5f,  0.5773f),  QVector2D(0.0f, 0.0f)),
-        VertexTex(QVector3D( 0.0f, 0.5f, -1.15475f), QVector2D(0.5f, 0.0f)),
-        VertexTex(QVector3D( 1.0f, 0.5f,  0.5773f),  QVector2D(1.0f, 0.0f)),
-        VertexTex(QVector3D( 0.0f, 2.0f,  0.0f),     QVector2D(0.5f, 1.0f)),
+        VertexTex(QVector3D(-1.0f, 0.5f,  0.5773f),  QVector2D(0.0f, 0.0f)),   // lower left front
+        VertexTex(QVector3D( 0.0f, 0.5f, -1.15475f), QVector2D(0.5f, 0.0f)),   // lower mid back
+        VertexTex(QVector3D( 1.0f, 0.5f,  0.5773f),  QVector2D(1.0f, 0.0f)),   // lower right front
+        VertexTex(QVector3D( 0.0f, 2.0f,  0.0f),     QVector2D(0.5f, 1.0f)),   // top
         VertexTex(QVector3D(-100.0f, 0.0f,  100.0f),   QVector2D(0.0f, 0.0f)),
         VertexTex(QVector3D( 100.0f, 0.0f,  100.0f),   QVector2D(1.0f, 0.0f)),
         VertexTex(QVector3D( 100.0f, 0.0f, -100.0),    QVector2D(1.0f, 1.0f)),
@@ -187,9 +187,9 @@ void MyWindow::render()
     glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)(sizeof(Vertices[0].getPos())));
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)((sizeof(Vertices[0].getPos()))+(sizeof(Vertices[0].getNormal()))));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex), 0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex), (const GLvoid*)(sizeof(Vertices[0].getPos())));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex), (const GLvoid*)((sizeof(Vertices[0].getPos()))+(sizeof(Vertices[0].getNormal()))));
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
 
@@ -232,7 +232,7 @@ void MyWindow::render()
         glUniform1f(mMatSpecularIntensityLocation, 0.0f);
         glUniform1f(mMatSpecularPowerLocation, 0.0f);
 
-        glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, NUM_INDICES, GL_UNSIGNED_INT, 0);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
@@ -274,7 +274,7 @@ void MyWindow::PrepareTexture(GLenum TextureTarget, const QString& FileName)
 {
     QImage TexImg;
 
-    TexImg.load(FileName);
+    if (!TexImg.load(FileName)) qDebug() << "Erreur chargement texture";
     glGenTextures(1, &mTextureObject);
     glBindTexture(TextureTarget, mTextureObject);
     glTexImage2D(TextureTarget, 0, GL_RGB, TexImg.width(), TexImg.height(), 0, GL_BGRA, GL_UNSIGNED_BYTE, TexImg.bits());
