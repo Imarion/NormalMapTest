@@ -96,7 +96,7 @@ void MyWindow::initialize()
     gWVPLocation     = mProgram->uniformLocation("gWVP");
     gWorldLocation   = mProgram->uniformLocation("gWorld");
     gSamplerLocation = mProgram->uniformLocation("gSampler");
-    glUniform1i(gSamplerLocation, 0);
+    gNormalSamplerLocation = mProgram->uniformLocation("gNormalSampler");
 
     mDirLightColorLocation            = mProgram->uniformLocation("gDirectionalLight.Base.Color");
     mDirLightAmbientIntensityLocation = mProgram->uniformLocation("gDirectionalLight.Base.AmbientIntensity");
@@ -112,8 +112,15 @@ void MyWindow::initialize()
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
 
-    PrepareTexture(GL_TEXTURE_2D, "F:/Download/Programmation/OpenGL/ogldev-source/ogldev-source/tutorial16/test.png");
+    //PrepareTexture(GL_TEXTURE_2D, "F:/Download/Programmation/OpenGL/ogldev-source/ogldev-source/tutorial16/test.png");
     //PrepareTexture(GL_TEXTURE_2D, "C:/Users/emr/Documents/Perso/Programmation/Opengl/Ogldev/ogldev-source/tutorial19/test.png");
+    /*
+    PrepareTexture(GL_TEXTURE_2D, "./data/test.png", mTextureObject);
+    PrepareTexture(GL_TEXTURE_2D, "./data/test_normalmap.png", mNormalTexObject);
+    */
+    PrepareTexture(GL_TEXTURE_2D, "./data/bricks.jpg", mTextureObject);
+    PrepareTexture(GL_TEXTURE_2D, "./data/normal_map.jpg", mNormalTexObject);
+
 }
 
 void MyWindow::CreateVertexBuffer()
@@ -242,16 +249,22 @@ void MyWindow::render()
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
 
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex), 0);    
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexTex), (const GLvoid*)(sizeof(Vertices[0].getPos())));
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex), (const GLvoid*)((sizeof(Vertices[0].getPos()))+(sizeof(Vertices[0].getNormal()))));
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(VertexTex), (const GLvoid*)((sizeof(Vertices[0].getPos()))+(sizeof(Vertices[0].getNormal()))+sizeof(Vertices[0].getTexCoord())));
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextureObject);
+    glUniform1i(gSamplerLocation, 0);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, mNormalTexObject);
+    glUniform1i(gNormalSamplerLocation, 1);
 
     static float Scale = 0.0f;
     Scale += 0.1f; // tut 12
@@ -294,6 +307,7 @@ void MyWindow::render()
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(3);
     }
     mProgram->release();
 
@@ -327,13 +341,13 @@ void MyWindow::initShaders()
     qDebug() << "shader link: " << mProgram->link();
 }
 
-void MyWindow::PrepareTexture(GLenum TextureTarget, const QString& FileName)
+void MyWindow::PrepareTexture(GLenum TextureTarget, const QString& FileName, GLuint& TexObject)
 {
     QImage TexImg;
 
     if (!TexImg.load(FileName)) qDebug() << "Erreur chargement texture";
-    glGenTextures(1, &mTextureObject);
-    glBindTexture(TextureTarget, mTextureObject);
+    glGenTextures(1, &TexObject);
+    glBindTexture(TextureTarget, TexObject);
     glTexImage2D(TextureTarget, 0, GL_RGB, TexImg.width(), TexImg.height(), 0, GL_BGRA, GL_UNSIGNED_BYTE, TexImg.bits());
     glTexParameterf(TextureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(TextureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

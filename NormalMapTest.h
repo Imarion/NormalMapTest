@@ -37,7 +37,7 @@ private:
     void initShaders();
     void CreateVertexBuffer();
 
-    void PrepareTexture(GLenum TextureTarget, const QString& FileName);
+    void PrepareTexture(GLenum TextureTarget, const QString& FileName, GLuint& TexObject);
 
 protected:
     void resizeEvent(QResizeEvent *);
@@ -54,9 +54,9 @@ private:
     bool   mUpdateSize;
 
     GLuint mVAO, mVBO, mIBO;
-    GLuint mTextureObject;
+    GLuint mTextureObject, mNormalTexObject;
 
-    GLuint gWVPLocation, gWorldLocation, gSamplerLocation;
+    GLuint gWVPLocation, gWorldLocation, gSamplerLocation, gNormalSamplerLocation;
     GLuint mDirLightColorLocation, mDirLightAmbientIntensityLocation;
     GLuint mDirLightDirectionLocation, mDirLightDiffuseIntensityLocation;
     GLuint mEyeWorldPosLocation;
