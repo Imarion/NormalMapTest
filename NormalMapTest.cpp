@@ -201,6 +201,7 @@ void MyWindow::CreateVertexBuffer()
     */
 
     utils::CalcNormals(Indices, NUM_INDICES, Vertices, NUM_VERTICES);
+    utils::CalcTangent(Indices, NUM_INDICES, Vertices, NUM_VERTICES);
 
     glGenBuffers(1, &mVBO);
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);

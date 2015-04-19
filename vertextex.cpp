@@ -15,3 +15,13 @@ QVector2D VertexTex::getTexCoord()
 {
     return m_tex;
 }
+
+QVector3D VertexTex::getTangent()
+{
+    return m_tangent;
+}
+
+void VertexTex::setTangent(QVector3D tangent)
+{
+    m_tangent = tangent;
+}

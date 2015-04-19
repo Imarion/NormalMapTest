@@ -10,6 +10,8 @@ public:
 
     static void CalcNormals(const unsigned int* pIndices, unsigned int IndexCount,
                             VertexTex *pVertices, unsigned int VertexCount);
+    static void CalcTangent(const unsigned int* pIndices, unsigned int IndexCount,
+                            VertexTex *pVertices, unsigned int VertexCount);
 
 };
 
