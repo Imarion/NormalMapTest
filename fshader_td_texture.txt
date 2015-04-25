@@ -1,0 +1,50 @@
+// based on Tom Dalling tuto: http://www.tomdalling.com/blog/modern-opengl/06-diffuse-point-lighting/
+
+#version 420
+
+out vec4 FragColor;
+
+in vec2 TexCoord0;  // tut 16
+in vec3 Normal0;    // tut 18
+in vec3 WorldPos0;  // tut 19 (specular)
+
+struct BaseLight
+{
+    vec3  Color;
+    float AmbientIntensity;
+    float DiffuseIntensity;
+};
+
+struct DirectionalLight
+{
+    BaseLight Base;
+    vec3      Direction; // TO DO: change to position
+};
+
+uniform mat4 gWorld; // tut 18
+uniform DirectionalLight gDirectionalLight;
+
+layout(binding=0) uniform sampler2D gSampler;
+layout(binding=1) uniform sampler2D gNormalSampler;
+
+vec4 CalcDirectionalLight(DirectionalLight Light, vec3 inNormal)
+{
+    mat3 normalMatrix = transpose(inverse(mat3(gWorld)));
+    vec3 normal = normalize(normalMatrix * inNormal);
+
+    vec3 fragPosition = vec3(gWorld * vec4(WorldPos0, 1));
+    vec3 surfaceToLight = Light.Direction - fragPosition;
+
+    float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
+
+    vec4 surfaceColor = texture(gSampler, TexCoord0);
+    return (vec4(brightness * Light.Base.Color * surfaceColor.rgb, surfaceColor.a));
+}
+
+void main()
+{
+    vec3 Normal = normalize(Normal0);
+    FragColor = CalcDirectionalLight(gDirectionalLight, Normal);
+//    FragColor = vec4 (1.0f, 0.0f, 0.0f, 1.0f);
+//    FragColor = texture2D(gSampler, TexCoord0.xy) * vec4(1.0, 0.0, 0.0, 1.0f);
+}

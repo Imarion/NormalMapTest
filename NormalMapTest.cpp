@@ -96,7 +96,7 @@ void MyWindow::initialize()
     mDirectionalLight.setColor(QVector3D(1.0f, 1.0f, 1.0f));   // tut 20
     mDirectionalLight.setAmbientIntensity(0.0f);
     mDirectionalLight.setDiffuseIntensity(1.0f);
-    mDirectionalLight.setDirection(QVector3D(0.0f, 0.0f, -1.0f));
+    mDirectionalLight.setDirection(QVector3D(0.0f, 0.0f, 2.0f));
 
     for (int i=SIMPLE_TEX; i<NORMAL_MAP+1; i++)
     {
@@ -338,13 +338,13 @@ void MyWindow::initShaders()
 
     //mProgram
     // Shader 1
-    shaderFile.setFileName(":/vshader_texture.txt");
+    shaderFile.setFileName(":/vshader_td_texture.txt");
     shaderFile.open(QIODevice::ReadOnly);
     shaderSource = shaderFile.readAll();
     shaderFile.close();
     qDebug() << "vertex 1 compile: " << vShader.compileSourceCode(shaderSource);
 
-    shaderFile.setFileName(":/fshader_texture.txt");
+    shaderFile.setFileName(":/fshader_td_texture.txt");
     shaderFile.open(QIODevice::ReadOnly);
     shaderSource = shaderFile.readAll();
     shaderFile.close();
