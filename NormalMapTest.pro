@@ -19,8 +19,11 @@ SOURCES += NormalMapTest.cpp main.cpp \
 
 OTHER_FILES += \
     fshader_color.txt \
-    fshader_texture.txt \
     vshader_color.txt \
+    vshader_texture.txt \
+    fshader_texture_normalmap.txt \
+    vshader_texture_normalmap.txt \
+    fshader_texture.txt \
     vshader_texture.txt
 
 RESOURCES += \

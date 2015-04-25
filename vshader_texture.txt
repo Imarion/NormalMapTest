@@ -3,7 +3,6 @@
 layout (location = 0) in vec3 Position;
 layout (location = 1) in vec3 Normal;
 layout (location = 2) in vec2 TexCoord;
-layout (location = 3) in vec3 Tangent;
 
 uniform mat4 gWVP;
 uniform mat4 gWorld; // tut 18
@@ -11,7 +10,6 @@ uniform mat4 gWorld; // tut 18
 out vec2 TexCoord0;     // tut 16
 out vec3 Normal0;       // tut 18
 out vec3 WorldPos0;     // tut 19 (specular)
-out vec3 Tangent0;
 
 void main()
 {
@@ -19,6 +17,5 @@ void main()
     TexCoord0   = TexCoord;
     Normal0     = (gWorld * vec4(Normal, 0.0)).xyz;   // tut 18
     WorldPos0   = (gWorld * vec4(Position, 1.0)).xyz; // tut 19
-    Tangent0    = (gWorld * vec4(Tangent, 0.0)).xyz;
 }
                                                                                                                                           

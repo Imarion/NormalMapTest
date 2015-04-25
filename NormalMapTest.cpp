@@ -23,12 +23,17 @@ MyWindow::~MyWindow()
 {
     if (Vertices != 0) delete[] Vertices;
     if (Indices  != 0) delete[] Indices;
+    if (mProgram[SIMPLE_TEX]!=0) delete mProgram[SIMPLE_TEX];
+    if (mProgram[NORMAL_MAP]!=0) delete mProgram[NORMAL_MAP];
 }
 
 MyWindow::MyWindow() : currentTimeMs(0), currentTimeS(0)
 {
     Vertices = 0;
     Indices  = 0;
+    mPtype   = SIMPLE_TEX;
+    mProgram[SIMPLE_TEX] = 0;
+    mProgram[NORMAL_MAP] = 0;
 
     setSurfaceType(QWindow::OpenGLSurface);
     setFlags(Qt::Window | Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
@@ -89,24 +94,28 @@ void MyWindow::initialize()
 
     //mDirectionalLight.setColor(QVector3D(1.0f, 1.0f, 1.0f)); // tut 19
     mDirectionalLight.setColor(QVector3D(1.0f, 1.0f, 1.0f));   // tut 20
-    mDirectionalLight.setAmbientIntensity(1.0f);
+    mDirectionalLight.setAmbientIntensity(0.0f);
     mDirectionalLight.setDiffuseIntensity(1.0f);
-    mDirectionalLight.setDirection(QVector3D(0.0f, 0.0f, 1.0f));
+    mDirectionalLight.setDirection(QVector3D(0.0f, 0.0f, -1.0f));
 
-    gWVPLocation     = mProgram->uniformLocation("gWVP");
-    gWorldLocation   = mProgram->uniformLocation("gWorld");
-    gSamplerLocation = mProgram->uniformLocation("gSampler");
-    gNormalSamplerLocation = mProgram->uniformLocation("gNormalSampler");
+    for (int i=SIMPLE_TEX; i<NORMAL_MAP+1; i++)
+    {
+        gWVPLocation[i]     = mProgram[i]->uniformLocation("gWVP");
+        gWorldLocation[i]   = mProgram[i]->uniformLocation("gWorld");
+        gSamplerLocation[i] = mProgram[i]->uniformLocation("gSampler");
 
-    mDirLightColorLocation            = mProgram->uniformLocation("gDirectionalLight.Base.Color");
-    mDirLightAmbientIntensityLocation = mProgram->uniformLocation("gDirectionalLight.Base.AmbientIntensity");
-    mDirLightDiffuseIntensityLocation = mProgram->uniformLocation("gDirectionalLight.Base.DiffuseIntensity");
-    mDirLightDirectionLocation        = mProgram->uniformLocation("gDirectionalLight.Direction");
 
-    // for Specular (tut19)
-    mEyeWorldPosLocation            = mProgram->uniformLocation("EyeWorldPos");
-    mMatSpecularIntensityLocation   = mProgram->uniformLocation("gMatProp.SpecularIntensity");
-    mMatSpecularPowerLocation       = mProgram->uniformLocation("gMatProp.SpecularPower");
+        mDirLightColorLocation[i]            = mProgram[i]->uniformLocation("gDirectionalLight.Base.Color");
+        mDirLightAmbientIntensityLocation[i] = mProgram[i]->uniformLocation("gDirectionalLight.Base.AmbientIntensity");
+        mDirLightDiffuseIntensityLocation[i] = mProgram[i]->uniformLocation("gDirectionalLight.Base.DiffuseIntensity");
+        mDirLightDirectionLocation[i]        = mProgram[i]->uniformLocation("gDirectionalLight.Direction");
+
+        // for Specular (tut19)
+        mEyeWorldPosLocation[i]            = mProgram[i]->uniformLocation("EyeWorldPos");
+        mMatSpecularIntensityLocation[i]   = mProgram[i]->uniformLocation("gMatProp.SpecularIntensity");
+        mMatSpecularPowerLocation[i]       = mProgram[i]->uniformLocation("gMatProp.SpecularPower");
+    }
+    gNormalSamplerLocation = mProgram[NORMAL_MAP]->uniformLocation("gNormalSampler");
 
     glFrontFace(GL_CCW);
     glCullFace(GL_BACK);
@@ -117,7 +126,11 @@ void MyWindow::initialize()
     /*
     PrepareTexture(GL_TEXTURE_2D, "./data/test.png", mTextureObject);
     PrepareTexture(GL_TEXTURE_2D, "./data/test_normalmap.png", mNormalTexObject);
+
+    PrepareTexture(GL_TEXTURE_2D, "./data/179.jpg", mTextureObject);
+    PrepareTexture(GL_TEXTURE_2D, "./data/179_norm.png", mNormalTexObject);
     */
+
     PrepareTexture(GL_TEXTURE_2D, "./data/bricks.jpg", mTextureObject);
     PrepareTexture(GL_TEXTURE_2D, "./data/normal_map.jpg", mNormalTexObject);
 
@@ -261,11 +274,13 @@ void MyWindow::render()
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextureObject);
-    glUniform1i(gSamplerLocation, 0);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, mNormalTexObject);
-    glUniform1i(gNormalSamplerLocation, 1);
-
+    glUniform1i(gSamplerLocation[mPtype], 0);
+    if (mPtype == NORMAL_MAP)
+    {
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, mNormalTexObject);
+        glUniform1i(gNormalSamplerLocation, 1);
+    }
     static float Scale = 0.0f;
     Scale += 0.1f; // tut 12
 
@@ -282,25 +297,25 @@ void MyWindow::render()
 
     WVP *= World;
 
-    mProgram->bind();
+    mProgram[mPtype]->bind();
     {
-        glUniformMatrix4fv(gWVPLocation, 1, GL_FALSE, WVP.constData());
-        glUniformMatrix4fv(gWorldLocation, 1, GL_FALSE, World.constData());        
+        glUniformMatrix4fv(gWVPLocation[mPtype], 1, GL_FALSE, WVP.constData());
+        glUniformMatrix4fv(gWorldLocation[mPtype], 1, GL_FALSE, World.constData());
 
-        glUniform3f(mDirLightColorLocation,mDirectionalLight.getColor().x(), mDirectionalLight.getColor().y(), mDirectionalLight.getColor().z());
-        glUniform1f(mDirLightAmbientIntensityLocation, mDirectionalLight.getAmbientIntensity());
+        glUniform3f(mDirLightColorLocation[mPtype], mDirectionalLight.getColor().x(), mDirectionalLight.getColor().y(), mDirectionalLight.getColor().z());
+        glUniform1f(mDirLightAmbientIntensityLocation[mPtype], mDirectionalLight.getAmbientIntensity());
         QVector3D Direction = mDirectionalLight.getDirection();
         Direction.normalize();
-        glUniform3f(mDirLightDirectionLocation, Direction.x(), Direction.y(), Direction.z());
-        glUniform1f(mDirLightDiffuseIntensityLocation, mDirectionalLight.getDiffuseIntensity());
+        glUniform3f(mDirLightDirectionLocation[mPtype], Direction.x(), Direction.y(), Direction.z());
+        glUniform1f(mDirLightDiffuseIntensityLocation[mPtype], mDirectionalLight.getDiffuseIntensity());
 
         // for specular, tut 19
-        glUniform3f(mEyeWorldPosLocation, CameraPos.x(), CameraPos.y(), CameraPos.z());
+        glUniform3f(mEyeWorldPosLocation[mPtype], CameraPos.x(), CameraPos.y(), CameraPos.z());
         //glUniform1f(mMatSpecularIntensityLocation, 1.0f);
         //glUniform1f(mMatSpecularPowerLocation, 32.0f);
         // tut 20 -> specular 0
-        glUniform1f(mMatSpecularIntensityLocation, 0.0f);
-        glUniform1f(mMatSpecularPowerLocation, 0.0f);
+        glUniform1f(mMatSpecularIntensityLocation[mPtype], 0.0f);
+        glUniform1f(mMatSpecularPowerLocation[mPtype], 0.0f);
 
         glDrawElements(GL_TRIANGLES, NUM_INDICES, GL_UNSIGNED_INT, 0);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -309,7 +324,7 @@ void MyWindow::render()
         glDisableVertexAttribArray(2);
         glDisableVertexAttribArray(3);
     }
-    mProgram->release();
+    mProgram[mPtype]->release();
 
     mContext->swapBuffers(this);
 }
@@ -335,10 +350,29 @@ void MyWindow::initShaders()
     shaderFile.close();
     qDebug() << "frag   1 compile: " << fShader.compileSourceCode(shaderSource);
 
-    mProgram = new (QOpenGLShaderProgram);
-    mProgram->addShader(&vShader);
-    mProgram->addShader(&fShader);
-    qDebug() << "shader link: " << mProgram->link();
+    mProgram[SIMPLE_TEX] = new (QOpenGLShaderProgram);
+    mProgram[SIMPLE_TEX]->addShader(&vShader);
+    mProgram[SIMPLE_TEX]->addShader(&fShader);
+    qDebug() << "shader link 1: " << mProgram[SIMPLE_TEX]->link();
+
+    // Shader 2
+    shaderFile.setFileName(":/vshader_texture_normalmap.txt");
+    shaderFile.open(QIODevice::ReadOnly);
+    shaderSource = shaderFile.readAll();
+    shaderFile.close();
+    qDebug() << "vertex 2 compile: " << vShader.compileSourceCode(shaderSource);
+
+    shaderFile.setFileName(":/fshader_texture_normalmap.txt");
+    shaderFile.open(QIODevice::ReadOnly);
+    shaderSource = shaderFile.readAll();
+    shaderFile.close();
+    qDebug() << "frag   2 compile: " << fShader.compileSourceCode(shaderSource);
+
+    mProgram[NORMAL_MAP] = new (QOpenGLShaderProgram);
+    mProgram[NORMAL_MAP]->addShader(&vShader);
+    mProgram[NORMAL_MAP]->addShader(&fShader);
+    qDebug() << "shader link 2: " << mProgram[NORMAL_MAP]->link();
+
 }
 
 void MyWindow::PrepareTexture(GLenum TextureTarget, const QString& FileName, GLuint& TexObject)
@@ -358,6 +392,17 @@ void MyWindow::keyPressEvent(QKeyEvent *keyEvent)
     switch(keyEvent->key())
     {
         case Qt::Key_P:
+            switch(mPtype)
+            {
+                case SIMPLE_TEX:
+                    mPtype = NORMAL_MAP;
+                    break;
+                case NORMAL_MAP:
+                    mPtype = SIMPLE_TEX;
+                    break;
+                default:
+                    break;
+            }
             break;
         case Qt::Key_Up:
             break;

@@ -46,7 +46,12 @@ private:
     QOpenGLContext *mContext;
     QOpenGLFunctions_3_3_Core *mFuncs;
 
-    QOpenGLShaderProgram *mProgram;
+    enum ProgramType
+    {
+        SIMPLE_TEX,
+        NORMAL_MAP
+    } mPtype;
+    QOpenGLShaderProgram *mProgram[2]; // 0 = no normal map, 1 = normal map
 
     QTimer mRepaintTimer;
     double currentTimeMs;
@@ -56,11 +61,11 @@ private:
     GLuint mVAO, mVBO, mIBO;
     GLuint mTextureObject, mNormalTexObject;
 
-    GLuint gWVPLocation, gWorldLocation, gSamplerLocation, gNormalSamplerLocation;
-    GLuint mDirLightColorLocation, mDirLightAmbientIntensityLocation;
-    GLuint mDirLightDirectionLocation, mDirLightDiffuseIntensityLocation;
-    GLuint mEyeWorldPosLocation;
-    GLuint mMatSpecularIntensityLocation, mMatSpecularPowerLocation;
+    GLuint gWVPLocation[2], gWorldLocation[2], gSamplerLocation[2], gNormalSamplerLocation;
+    GLuint mDirLightColorLocation[2], mDirLightAmbientIntensityLocation[2];
+    GLuint mDirLightDirectionLocation[2], mDirLightDiffuseIntensityLocation[2];
+    GLuint mEyeWorldPosLocation[2];
+    GLuint mMatSpecularIntensityLocation[2], mMatSpecularPowerLocation[2];
 
     VertexTex    *Vertices;
     unsigned int *Indices;
