@@ -8,5 +8,7 @@
         <file>vshader_texture.txt</file>
         <file>fshader_td_texture.txt</file>
         <file>vshader_td_texture.txt</file>
+        <file>fshader_td_texture_normalmap.txt</file>
+        <file>vshader_td_texture_normalmap.txt</file>
     </qresource>
 </RCC>

@@ -96,24 +96,18 @@ void MyWindow::initialize()
     mDirectionalLight.setColor(QVector3D(1.0f, 1.0f, 1.0f));   // tut 20
     mDirectionalLight.setAmbientIntensity(0.0f);
     mDirectionalLight.setDiffuseIntensity(1.0f);
-    mDirectionalLight.setDirection(QVector3D(0.0f, 0.0f, 2.0f));
+    mDirectionalLight.setDirPos(QVector3D(0.0f, 0.0f, 2.0f));
 
     for (int i=SIMPLE_TEX; i<NORMAL_MAP+1; i++)
     {
-        gWVPLocation[i]     = mProgram[i]->uniformLocation("gWVP");
-        gWorldLocation[i]   = mProgram[i]->uniformLocation("gWorld");
+        gCameraLocation[i]  = mProgram[i]->uniformLocation("camera");
+        gModelLocation[i]   = mProgram[i]->uniformLocation("model");
         gSamplerLocation[i] = mProgram[i]->uniformLocation("gSampler");
-
 
         mDirLightColorLocation[i]            = mProgram[i]->uniformLocation("gDirectionalLight.Base.Color");
         mDirLightAmbientIntensityLocation[i] = mProgram[i]->uniformLocation("gDirectionalLight.Base.AmbientIntensity");
         mDirLightDiffuseIntensityLocation[i] = mProgram[i]->uniformLocation("gDirectionalLight.Base.DiffuseIntensity");
-        mDirLightDirectionLocation[i]        = mProgram[i]->uniformLocation("gDirectionalLight.Direction");
-
-        // for Specular (tut19)
-        mEyeWorldPosLocation[i]            = mProgram[i]->uniformLocation("EyeWorldPos");
-        mMatSpecularIntensityLocation[i]   = mProgram[i]->uniformLocation("gMatProp.SpecularIntensity");
-        mMatSpecularPowerLocation[i]       = mProgram[i]->uniformLocation("gMatProp.SpecularPower");
+        mDirLightPositionLocation[i]         = mProgram[i]->uniformLocation("gDirectionalLight.Position");
     }
     gNormalSamplerLocation = mProgram[NORMAL_MAP]->uniformLocation("gNormalSampler");
 
@@ -121,19 +115,18 @@ void MyWindow::initialize()
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
 
-    //PrepareTexture(GL_TEXTURE_2D, "F:/Download/Programmation/OpenGL/ogldev-source/ogldev-source/tutorial16/test.png");
-    //PrepareTexture(GL_TEXTURE_2D, "C:/Users/emr/Documents/Perso/Programmation/Opengl/Ogldev/ogldev-source/tutorial19/test.png");
-    /*
+/*
     PrepareTexture(GL_TEXTURE_2D, "./data/test.png", mTextureObject);
     PrepareTexture(GL_TEXTURE_2D, "./data/test_normalmap.png", mNormalTexObject);
+*/
 
     PrepareTexture(GL_TEXTURE_2D, "./data/179.jpg", mTextureObject);
-    PrepareTexture(GL_TEXTURE_2D, "./data/179_norm.png", mNormalTexObject);
-    */
+    PrepareTexture(GL_TEXTURE_2D, "./data/179_norm.jpg", mNormalTexObject);
 
+/*
     PrepareTexture(GL_TEXTURE_2D, "./data/bricks.jpg", mTextureObject);
     PrepareTexture(GL_TEXTURE_2D, "./data/normal_map.jpg", mNormalTexObject);
-
+*/
 }
 
 void MyWindow::CreateVertexBuffer()
@@ -294,28 +287,20 @@ void MyWindow::render()
 
     WVP.perspective(60.0f, (float)this->width()/(float)this->height(), 1.0f, 100.0f);
     WVP.lookAt(CameraPos, QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
+    QMatrix4x4 CameraMat(WVP);
 
     WVP *= World;
 
     mProgram[mPtype]->bind();
-    {
-        glUniformMatrix4fv(gWVPLocation[mPtype], 1, GL_FALSE, WVP.constData());
-        glUniformMatrix4fv(gWorldLocation[mPtype], 1, GL_FALSE, World.constData());
+    {        
+        glUniformMatrix4fv(gCameraLocation[mPtype], 1, GL_FALSE, CameraMat.constData());
+        glUniformMatrix4fv(gModelLocation[mPtype],  1, GL_FALSE, World.constData());
 
         glUniform3f(mDirLightColorLocation[mPtype], mDirectionalLight.getColor().x(), mDirectionalLight.getColor().y(), mDirectionalLight.getColor().z());
         glUniform1f(mDirLightAmbientIntensityLocation[mPtype], mDirectionalLight.getAmbientIntensity());
-        QVector3D Direction = mDirectionalLight.getDirection();
-        Direction.normalize();
-        glUniform3f(mDirLightDirectionLocation[mPtype], Direction.x(), Direction.y(), Direction.z());
+        QVector3D LightPos = mDirectionalLight.getDirPos();
+        glUniform3f(mDirLightPositionLocation[mPtype], LightPos.x(), LightPos.y(), LightPos.z());
         glUniform1f(mDirLightDiffuseIntensityLocation[mPtype], mDirectionalLight.getDiffuseIntensity());
-
-        // for specular, tut 19
-        glUniform3f(mEyeWorldPosLocation[mPtype], CameraPos.x(), CameraPos.y(), CameraPos.z());
-        //glUniform1f(mMatSpecularIntensityLocation, 1.0f);
-        //glUniform1f(mMatSpecularPowerLocation, 32.0f);
-        // tut 20 -> specular 0
-        glUniform1f(mMatSpecularIntensityLocation[mPtype], 0.0f);
-        glUniform1f(mMatSpecularPowerLocation[mPtype], 0.0f);
 
         glDrawElements(GL_TRIANGLES, NUM_INDICES, GL_UNSIGNED_INT, 0);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -356,13 +341,13 @@ void MyWindow::initShaders()
     qDebug() << "shader link 1: " << mProgram[SIMPLE_TEX]->link();
 
     // Shader 2
-    shaderFile.setFileName(":/vshader_texture_normalmap.txt");
+    shaderFile.setFileName(":/vshader_td_texture_normalmap.txt");
     shaderFile.open(QIODevice::ReadOnly);
     shaderSource = shaderFile.readAll();
     shaderFile.close();
     qDebug() << "vertex 2 compile: " << vShader.compileSourceCode(shaderSource);
 
-    shaderFile.setFileName(":/fshader_texture_normalmap.txt");
+    shaderFile.setFileName(":/fshader_td_texture_normalmap.txt");
     shaderFile.open(QIODevice::ReadOnly);
     shaderSource = shaderFile.readAll();
     shaderFile.close();

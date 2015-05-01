@@ -2,11 +2,11 @@
 
 #version 420
 
-out vec4 FragColor;
+out vec4 finalColor;
 
-in vec2 TexCoord0;  // tut 16
-in vec3 Normal0;    // tut 18
-in vec3 WorldPos0;  // tut 19 (specular)
+in vec2 fragTexCoord;
+in vec3 fragNormal;
+in vec3 fragVert;
 
 struct BaseLight
 {
@@ -18,10 +18,10 @@ struct BaseLight
 struct DirectionalLight
 {
     BaseLight Base;
-    vec3      Direction; // TO DO: change to position
+    vec3      Position;
 };
 
-uniform mat4 gWorld; // tut 18
+uniform mat4 model;
 uniform DirectionalLight gDirectionalLight;
 
 layout(binding=0) uniform sampler2D gSampler;
@@ -29,22 +29,25 @@ layout(binding=1) uniform sampler2D gNormalSampler;
 
 vec4 CalcDirectionalLight(DirectionalLight Light, vec3 inNormal)
 {
-    mat3 normalMatrix = transpose(inverse(mat3(gWorld)));
-    vec3 normal = normalize(normalMatrix * inNormal);
+    mat3 normalMatrix = transpose(inverse(mat3(model)));
+    vec3 normal = normalize(normalMatrix  * inNormal);
 
-    vec3 fragPosition = vec3(gWorld * vec4(WorldPos0, 1));
-    vec3 surfaceToLight = Light.Direction - fragPosition;
+    vec3 fragPosition = vec3(model  * vec4(fragVert, 1));
+    vec3 surfaceToLight = Light.Position - fragPosition;
 
-    float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
+    //float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
+    float brightness = dot(normal, surfaceToLight);
+    brightness = clamp(brightness, 0, 1);
 
-    vec4 surfaceColor = texture(gSampler, TexCoord0);
+    vec4 surfaceColor = texture(gSampler, fragTexCoord);
+
     return (vec4(brightness * Light.Base.Color * surfaceColor.rgb, surfaceColor.a));
 }
 
 void main()
 {
-    vec3 Normal = normalize(Normal0);
-    FragColor = CalcDirectionalLight(gDirectionalLight, Normal);
-//    FragColor = vec4 (1.0f, 0.0f, 0.0f, 1.0f);
+//    vec3 Normal = normalize(Normal0);
+    finalColor = CalcDirectionalLight(gDirectionalLight, fragNormal);
+//    finalColor = vec4 (1.0f, 0.0f, 0.0f, 1.0f);
 //    FragColor = texture2D(gSampler, TexCoord0.xy) * vec4(1.0, 0.0, 0.0, 1.0f);
 }

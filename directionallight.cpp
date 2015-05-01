@@ -3,24 +3,25 @@
 
 DirectionalLight::DirectionalLight()
 {
-    mDirection = QVector3D(0.0f, 0.0f, 0.0f);
+    mDirPos = QVector3D(0.0f, 0.0f, 0.0f);
 }
 
-DirectionalLight::DirectionalLight(QVector3D Color, float AmbientIntensity, float DiffuseIntensity, QVector3D Direction)
+DirectionalLight::DirectionalLight(QVector3D Color, float AmbientIntensity, float DiffuseIntensity, QVector3D DirPos)
 {
     setColor(Color);
     setAmbientIntensity(AmbientIntensity);
     setDiffuseIntensity(DiffuseIntensity);
-    mDirection = Direction;
+    mDirPos = DirPos;
 }
 
 
-QVector3D DirectionalLight::getDirection()
+QVector3D DirectionalLight::getDirPos()
 {
-    return mDirection;
+    return mDirPos;
 }
 
-void DirectionalLight::setDirection(QVector3D newDir)
+void DirectionalLight::setDirPos(QVector3D newDirPos)
 {
-    mDirection = newDir;
+    mDirPos = newDirPos;
 }
+

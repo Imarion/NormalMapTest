@@ -26,7 +26,9 @@ OTHER_FILES += \
     fshader_texture.txt \
     vshader_texture.txt \
     fshader_td_texture.txt \
-    vshader_td_texture.txt
+    vshader_td_texture.txt \
+    fshader_td_texture_normalmap.txt \
+    vshader_td_texture_normalmap.txt
 
 RESOURCES += \
     shaders.qrc

@@ -61,9 +61,9 @@ private:
     GLuint mVAO, mVBO, mIBO;
     GLuint mTextureObject, mNormalTexObject;
 
-    GLuint gWVPLocation[2], gWorldLocation[2], gSamplerLocation[2], gNormalSamplerLocation;
+    GLuint gCameraLocation[2], gModelLocation[2], gSamplerLocation[2], gNormalSamplerLocation;
     GLuint mDirLightColorLocation[2], mDirLightAmbientIntensityLocation[2];
-    GLuint mDirLightDirectionLocation[2], mDirLightDiffuseIntensityLocation[2];
+    GLuint mDirLightPositionLocation[2], mDirLightDiffuseIntensityLocation[2];
     GLuint mEyeWorldPosLocation[2];
     GLuint mMatSpecularIntensityLocation[2], mMatSpecularPowerLocation[2];
 
